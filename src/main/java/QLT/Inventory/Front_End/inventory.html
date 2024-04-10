@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Inventario</title>
+    <style>
+        .kanit-regular-italic {
+            font-family: "Agency FB", sans-serif;
+            font-weight: 400;
+            font-style: italic;
+        }
+        body {
+            font-family: 'Calibri', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #0F2027, #203A43, #2C5364); /* Fondo degradado azul */
+            color: #ffffff; /* Texto blanco para contraste */
+        }
+
+        h2 {
+            color: #52cbb3; /* Azul cielo para títulos */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2C5364; /* Azul claro para encabezados de tabla */
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #203A43; /* Azul turquesa para hover */
+        }
+
+        .button, .buttonAdd{
+            background-color: #4ca2cd; /* Azul claro */
+            color: white;
+            padding: 10px 15px; /* Ajusta el padding para controlar el tamaño */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 14px; /* Ajusta el tamaño del texto si es necesario */
+            display: inline-block; /* Asegura que los botones no ocupen todo el ancho disponible */
+            width: auto; /* Permite que el ancho del botón se ajuste al contenido */
+            min-width: 80px; /* Establece un ancho mínimo para los botones */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Opcional: añade una sombra suave para un efecto elevado */
+        }
+
+        .button:hover, .buttonAdd:hover {
+            background-color: #367fa9; /* Azul más claro para el efecto hover */
+        }
+
+        .button:active, .buttonAdd:active {
+            transform: translateY(2px); /* Efecto de clic */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Sombra más suave al presionar */
+        }
+
+        form {
+            background-color: rgba(44, 83, 100, 0.9); /* Azul claro con transparencia para el formulario */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 20px auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        input[type=text], input[type=number], button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            background-image: linear-gradient(to right, #4ca2cd, #67B26F);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            opacity: 0.9;
+        }
+
+        form {
+            background-color: rgba(34, 49, 63, 0.85); /* Azul oscuro semi-transparente */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 40px auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff; /* Texto blanco */
+        }
+
+        input[type=text], input[type=number]{
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #fff;
+            color: #333;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            background-color: #4ca2cd;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #367fa9;
+        }
+    </style>
+</head>
+<body>
+<h2>Agregar Ítem al Inventario</h2>
+<form id="inventoryForm" >
+    <input type="hidden" id="itemId" name="itemId">
+    <input type="text" id="name" name="name" placeholder="Nombre" required><br>
+    <input type="number" id="quantity" name="quantity" placeholder="Cantidad" required><br>
+    <input type="text" id="price" name="price" placeholder="Precio" required><br>
+    <input type="text" id="description" name="description" placeholder="Descripción" required><br>
+    <button type="submit" class="buttonAdd">Agregar/Actualizar Ítem</button>
+</form>
+
+<h2>Ítems de Inventario</h2>
+<table id="inventoryTable">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    <!-- Los ítems del inventario se añadirán aquí -->
+    </tbody>
+</table>
+<script>
+    // Función para cargar los ítems del inventario desde el backend y mostrarlos en la tabla
+    function loadInventoryItems() {
+        fetch('http://localhost:8080/inventory/')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#inventoryTable tbody');
+                tbody.innerHTML = ''; // Limpiar la tabla antes de cargar nuevos ítems
+                data.forEach(item => {
+                    let row = tbody.insertRow();
+                    let name = row.insertCell(0);
+                    let quantity = row.insertCell(1);
+                    let price = row.insertCell(2);
+                    let description = row.insertCell(3);
+                    let actions = row.insertCell(4);
+                    name.textContent = item.name;
+                    quantity.textContent = item.quantity;
+                    price.textContent = item.price;
+                    description.textContent = item.description;
+                    actions.innerHTML = `<button class="button" onclick="editItem(${item.id}, '${item.name}', ${item.quantity}, '${item.price}', '${item.description}')" >Modificar</button><button class="button" onclick="deleteItem(${item.id})">Eliminar</button>`;
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Función para manejar la adición o actualización de un ítem del inventario
+    document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevenir el comportamiento de envío por defecto del formulario
+
+        const itemId = document.getElementById('itemId').value;
+        const name = document.getElementById('name').value;
+        const quantity = document.getElementById('quantity').value;
+        const price = document.getElementById('price').value;
+        const description = document.getElementById('description').value;
+
+        const item = { name, quantity, price, description };
+
+        const url = itemId ? `http://localhost:8080/inventory/${itemId}` : 'http://localhost:8080/inventory/';
+        const method = itemId ? 'PUT' : 'POST';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item),
+        })
+            .then(response => {
+                if (response.ok) {
+                    clearForm();
+                    loadInventoryItems(); // Recargar los ítems del inventario
+                } else {
+                    alert('Hubo un error al procesar la solicitud.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    // Función para limpiar el formulario
+    function clearForm() {
+        document.getElementById('inventoryForm').reset();
+        document.getElementById('itemId').value = '';
+    }
+
+    // Función para llenar el formulario con los datos de un ítem para editar
+    function editItem(id, name, quantity, price, description) {
+        document.getElementById('itemId').value = id;
+        document.getElementById('name').value = name;
+        document.getElementById('quantity').value = quantity;
+        document.getElementById('price').value = price;
+        document.getElementById('description').value = description;
+    }
+
+    // Función para eliminar un ítem del inventario
+    function deleteItem(id) {
+        if(confirm("¿Estás seguro de querer eliminar este ítem?")) {
+            fetch(`http://localhost:8080/inventory/${id}`, {
+                method: 'DELETE',
+            })
+                .then(response => {
+                    if(response.ok) {
+                        loadInventoryItems(); // Recargar los ítems del inventario
+                    } else {
+                        alert('Hubo un error al intentar eliminar el ítem.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+    // Cargar los ítems del inventario cuando la página esté lista
+    window.onload = function() {
+        loadInventoryItems();
+    };
+</script>
+</body>
+</html>
