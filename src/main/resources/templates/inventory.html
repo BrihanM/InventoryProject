@@ -29,7 +29,7 @@
         }
 
         th, td {
-            padding: 12px;
+            padding: 5px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -46,12 +46,12 @@
         .button, .buttonAdd{
             background-color: #4ca2cd; /* Azul claro */
             color: white;
-            padding: 10px 15px; /* Ajusta el padding para controlar el tamaño */
+            padding: 8px 12px; /* Ajusta el padding para controlar el tamaño */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            font-size: 14px; /* Ajusta el tamaño del texto si es necesario */
+            font-size: 12px; /* Ajusta el tamaño del texto si es necesario */
             display: inline-block; /* Asegura que los botones no ocupen todo el ancho disponible */
             width: auto; /* Permite que el ancho del botón se ajuste al contenido */
             min-width: 80px; /* Establece un ancho mínimo para los botones */
@@ -79,8 +79,8 @@
 
         input[type=text], input[type=number], button {
             width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 8px;
+            margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
@@ -148,20 +148,22 @@
 </form>
 
 <h2>Ítems de Inventario</h2>
-<table id="inventoryTable">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-    <!-- Los ítems del inventario se añadirán aquí -->
-    </tbody>
-</table>
+<div id="inventoryTableContainer">
+    <table id="inventoryTable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!-- Los ítems del inventario se añadirán aquí -->
+        </tbody>
+    </table>
+</div>
 <script>
     // Función para cargar los ítems del inventario desde el backend y mostrarlos en la tabla
     function loadInventoryItems() {

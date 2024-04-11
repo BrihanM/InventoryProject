@@ -1,5 +1,6 @@
 package QLT.Inventory.Controller;
-
+/*El controlador maneja las solicitudes HTTP y responde con datos de inventario o mensajes de
+estado. Usa anotaciones de Spring MVC.*/
 import QLT.Inventory.Model.InventoryItem;
 import QLT.Inventory.Service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +9,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
-@RestController
-@RequestMapping("/inventory")
+@CrossOrigin // Permite solicitudes de origen cruzado a todos los dominios
+@RestController //@RestController: Indica que la clase es un controlador donde cada método devuelve
+// un objeto de dominio en lugar de una vista.
+@RequestMapping("/inventory") //@RequestMapping: Define la ruta base para todos los métodos del controlador.
 public class InventoryController {
     @Autowired
     private InventoryService inventoryService;
 
+    //@GetMapping, @PostMapping, etc.: Especifican el tipo de solicitud HTTP y la ruta específica si es necesario.
     // Obtener todos los ítems
     @GetMapping("/")
     public List<InventoryItem> list() {
@@ -38,7 +41,9 @@ public class InventoryController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    /*@PutMapping y @DeleteMapping: Indican que los métodos manejan solicitudes HTTP PUT y DELETE,
+    respectivamente. @PutMapping("/{id}") actualiza un ítem existente, mientras que
+    @DeleteMapping("/{id}") elimina un ítem.*/
     // Actualizar un ítem
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody InventoryItem updatedItem, @PathVariable Long id) {

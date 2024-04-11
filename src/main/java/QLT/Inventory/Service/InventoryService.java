@@ -1,5 +1,6 @@
 package QLT.Inventory.Service;
-
+/*Aunque no es estrictamente necesario, es una buena práctica separar la lógica de negocio en una
+capa de servicio.*/
 import QLT.Inventory.Model.InventoryItem;
 import QLT.Inventory.Repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service//@Service: Indica que esta clase es un servicio, parte de la capa de lógica de negocio.
 public class InventoryService {
 
-    @Autowired
+    @Autowired//@Autowired: Spring inyecta automáticamente la instancia de ItemRepository.
     private InventoryRepository inventoryRepository;
 
     // Listar todos los ítems
